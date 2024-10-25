@@ -1,8 +1,8 @@
 import os
-
 import json
+import sys
 import urllib3
-
+from dotenv import load_dotenv
 
 def do_login(http, user, pw):
     if not user or not pw:
@@ -115,7 +115,17 @@ def update_podcast_episode(http, token, body):
 
 
 if __name__ == "__main__":
+
+    # load credentials
+    load_dotenv()
+    if not 'USERNAME' in os.environ:
+        print('USERNAME environment variable does not exist.')
+        sys.exit()
+    if not 'PASSWORD' in os.environ:
+        print('PASSWORD environment variable does not exist.')
+        sys.exit()
+
     http = urllib3.PoolManager()
-    token = do_login(http, user="username here", pw="password here")
+    token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
     history = get_history(http, token)
     print(history)
