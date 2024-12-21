@@ -21,7 +21,8 @@ def create_database(db_name='pocketcasts.db'):
             Is_Starred BOOLEAN DEFAULT 0 CHECK (Is_Starred IN (0, 1)),
             Podcast_UUID TEXT NOT NULL,
             Podcast_Title TEXT NOT NULL,
-            Author TEXT NOT NULL)
+            Author TEXT NOT NULL,
+            Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)
     """
 
     try:
