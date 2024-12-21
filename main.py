@@ -1,11 +1,71 @@
 import os
-import json
 import sys
-import urllib3
 from dotenv import load_dotenv
 
 from auth import *
 from pocketcasts import get_history
+
+import sqlite3
+import json
+
+def create_database(db_name='pocketcasts.db'):
+    table_schema = """
+        CREATE TABLE IF NOT EXISTS PocketCasts_Listening_History (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            Episode_UUID TEXT NOT NULL,
+            URL TEXT NOT NULL,
+            Published_Date TEXT NOT NULL,
+            Duration INTEGER,
+            Title TEXT NOT NULL,
+            Size INTEGER NOT NULL,
+            Is_Starred BOOLEAN DEFAULT 0 CHECK (Is_Starred IN (0, 1)),
+            Podcast_UUID TEXT NOT NULL,
+            Podcast_Title TEXT NOT NULL,
+            Author TEXT NOT NULL)
+    """
+
+    try:
+        connection = sqlite3.connect('pocketcasts.db')
+        cursor = connection.cursor()
+        cursor.execute(table_schema)
+        connection.commit()
+        print('Table created successfully.')
+        return connection
+    except sqlite3.Error as e:
+        print(f'Something happened: {e}')
+        if connection:
+            connection.rollback()
+        return None
+
+def insert_data(connection, data):
+    if not connection:
+        print("Error: No Database connection.")
+        return
+    
+    sql_insert_command = """
+        INSERT INTO PocketCasts_Listening_History (
+            Episode_UUID,
+            URL,
+            Published_Date,
+            Duration,
+            Title,
+            Size,
+            Is_Starred,
+            Podcast_UUID,
+            Podcast_Title,
+            Author
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    try:
+        cursor = connection.cursor()
+        cursor.execute(sql_insert_command, data)
+        connection.commit()
+        print('Data inserted successfully.')
+    except sqlite3.Error as e:
+        print(f'{e}')
+        if connection:
+            connection.rollback()
 
 if __name__ == "__main__":
 
@@ -18,13 +78,31 @@ if __name__ == "__main__":
         print('PASSWORD environment variable does not exist.')
         sys.exit()
 
-    http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
-    token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
-    history = get_history(http, token)
+    # http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
+    # token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
+    # history = get_history(http, token)
+    # with open('data1.json', 'w', encoding='utf-8') as file:
+    # json.dump(history, file)
 
-    # save file 
-    
-    with open('data1.json', 'w', encoding='utf-8') as file:
-        json.dump(history, file)
+    # read sample json into memory
+    with open('data.json', 'r', encoding='utf-8') as file:
+        history = json.load(file)   
+
+    # - Create the SQLite database
+    connection = create_database()
+    if connection:
+        for episode in history['episodes']:
+            insert_data(connection, (
+                episode['uuid'],
+                episode['url'],
+                episode['published'],
+                episode['duration'], 
+                episode['title'],
+                episode['size'],
+                episode['starred'],
+                episode['podcastUuid'],
+                episode['podcastTitle'],
+                episode['author'])
+            )
         
-    print(history)
+        connection.close()
