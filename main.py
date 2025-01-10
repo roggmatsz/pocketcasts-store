@@ -11,34 +11,23 @@ import json
 from collections import deque
 
 def create_database(db_name='pocketcasts.db'):
-    table_schema = """
-        CREATE TABLE IF NOT EXISTS PocketCasts_Listening_History (
-            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            Episode_UUID TEXT NOT NULL,
-            URL TEXT NOT NULL,
-            Published_Date TEXT NOT NULL,
-            Duration INTEGER,
-            Title TEXT NOT NULL,
-            Size INTEGER NOT NULL,
-            Is_Starred BOOLEAN DEFAULT 0 CHECK (Is_Starred IN (0, 1)),
-            Podcast_UUID TEXT NOT NULL,
-            Podcast_Title TEXT NOT NULL,
-            Author TEXT NOT NULL,
-            Date_Saved DATETIME DEFAULT CURRENT_TIMESTAMP)
-    """
-
-    try:
-        connection = sqlite3.connect(db_name)
+    with sqlite3.connect(db_name) as connection:
         cursor = connection.cursor()
-        cursor.execute(table_schema)
-        connection.commit()
-        print('Table created successfully.')
-        return connection
-    except sqlite3.Error as e:
-        print(f'Something happened: {e}')
-        if connection:
-            connection.rollback()
-        return None
+        cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS Listening_History (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                Episode_UUID TEXT NOT NULL,
+                URL TEXT NOT NULL,
+                Published_Date TEXT NOT NULL,
+                Duration INTEGER,
+                Title TEXT NOT NULL,
+                Size INTEGER NOT NULL,
+                Is_Starred BOOLEAN DEFAULT 0 CHECK (Is_Starred IN (0, 1)),
+                Podcast_UUID TEXT NOT NULL,
+                Podcast_Title TEXT NOT NULL,
+                Author TEXT NOT NULL,
+                Date_Saved DATETIME DEFAULT CURRENT_TIMESTAMP)
+        ''')
 
 def insert_data(connection, data):
     if not connection:
