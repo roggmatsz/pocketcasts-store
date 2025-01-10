@@ -1,7 +1,7 @@
 class ListenRecord:
     def __init__(self, episode_uuid, url, published_date, duration,
                  title, size, is_starred, podcast_uuid, podcast_title,
-                 author, date_added, id = None
+                 author, date_added = '', id = None
                 ):
         self.id = id
         self.episode_uuid = episode_uuid
@@ -27,9 +27,18 @@ class ListenRecord:
 
     @classmethod
     def From_Dictionary(cls, source_dictionary):
-        id, episode_uuid, url, published_date, duration, title, size, is_starred, podcast_uuid, podcast_title, author, date_added = source_dictionary.values()
+        episode_uuid = source_dictionary['uuid']
+        url = source_dictionary['url']
+        published_date = source_dictionary['published']
+        duration = source_dictionary['duration']
+        title = source_dictionary['title']
+        size = source_dictionary['size']
+        is_starred = source_dictionary['starred']
+        podcast_uuid = source_dictionary['podcastUuid']
+        podcast_title = source_dictionary['podcastTitle']
+        author = source_dictionary['author']
 
-        return cls(episode_uuid, url, published_date, duration, title, size, is_starred, podcast_uuid, podcast_title, author, date_added, id)
+        return cls(episode_uuid, url, published_date, duration, title, size, is_starred, podcast_uuid, podcast_title, author)
 
     @classmethod
     def From_Row_List(cls, source_list):
