@@ -1,7 +1,7 @@
 class ListenRecord:
-    def __init__(self, id, episode_uuid, url, published_date, duration,
+    def __init__(self, episode_uuid, url, published_date, duration,
                  title, size, is_starred, podcast_uuid, podcast_title,
-                 author, date_added
+                 author, date_added, id = None
                 ):
         self.id = id
         self.episode_uuid = episode_uuid
@@ -15,11 +15,38 @@ class ListenRecord:
         self.podcast_title = podcast_title
         self.author = author
         self.date_added = date_added
+
+    @classmethod
+    def Convert_List(cls, source_list):
+        packaged_list = []
+
+        for row in source_list:
+            packaged_list.append(ListenRecord.From_Row_List(row))
+        
+        return packaged_list
+
+    @classmethod
+    def From_Row_List(cls, source_list):
+        # id, episode_uuid, url, published_date, duration, title, size, is_starred, podcast_uuid, podcast_title, author, date_added = source_list
+        id = source_list[0]
+        episode_uuid = source_list[1]
+        url = source_list[2]
+        published_date = source_list[3]
+        duration = source_list[4]
+        title = source_list[5]
+        size = source_list[6]
+        is_starred = source_list[7]
+        podcast_uuid = source_list[8]
+        podcast_title = source_list[9]
+        author = source_list[10]
+        date_added = source_list[11]
+        
+        
+        return cls(episode_uuid, url, published_date, duration, title, size, is_starred, podcast_uuid, podcast_title, author, date_added, id)
     
     def __eq__(self, other):
         if isinstance(other, ListenRecord):
-            return (self.id == other.id and
-                    self.episode_uuid == other.episode_uuid and
+            return (self.episode_uuid == other.episode_uuid and
                     self.url == other.url and
                     self.published_date == other.published_date and
                     self.duration == other.duration and
