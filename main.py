@@ -92,8 +92,7 @@ if __name__ == "__main__":
     # - Create the SQLite database
     connection = create_database('pocketcasts2.db')
     if connection:
-        episode_history = history['episodes']
-        for episode in episode_history.reverse():
+        for episode in history['episodes'][::-1]:
             insert_data(connection, (
                 episode['uuid'],
                 episode['url'],
@@ -104,7 +103,5 @@ if __name__ == "__main__":
                 episode['starred'],
                 episode['podcastUuid'],
                 episode['podcastTitle'],
-                episode['author'])
-            )
-        
-    #     connection.close()
+                episode['author']))
+    connection.close()
