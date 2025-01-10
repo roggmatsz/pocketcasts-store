@@ -1,17 +1,7 @@
 class ListenRecord:
-    def __init__(self,
-                 id,
-                 episode_uuid,
-                 url,
-                 published_date,
-                 duration,
-                 title,
-                 size,
-                 is_starred,
-                 podcast_uuid,
-                 podcast_title,
-                 author,
-                 timestamp
+    def __init__(self, id, episode_uuid, url, published_date, duration,
+                 title, size, is_starred, podcast_uuid, podcast_title,
+                 author, date_added
                 ):
         self.id = id
         self.episode_uuid = episode_uuid
@@ -24,7 +14,7 @@ class ListenRecord:
         self.podcast_uuid = podcast_uuid
         self.podcast_title = podcast_title
         self.author = author
-        self.timestamp = timestamp
+        self.date_added = date_added
     
     def __eq__(self, other):
         if isinstance(other, ListenRecord):
@@ -39,11 +29,11 @@ class ListenRecord:
                     self.podcast_uuid == other.podcast_uuid and
                     self.podcast_title == other.podcast_title and
                     self.author == other.author and
-                    self.timestamp == other.timestamp)
+                    self.date_added == other.date_added)
         
         return False
     
     def __repr__(self):
-        return 'ListenRecord\n - ID: {}\n - Episode UUID: {}\n - URL: {}\n - Published Date: {}\n - Duration: {}\n - Title: {}\n - Size: {}\n - Is Starred: {}\n - Podcast UUID: {}\n - Podcast Title: {}\n - Author: {}\n - Timestamp: {}'.format(
-            self.id, self.episode_uuid, self.url, self.published_date, self.duration, self.title, self.size, self.is_starred, self.podcast_uuid, self.podcast_title, self.author, self.timestamp
+        return 'ListenRecord\n - ID: {}\n - Episode UUID: {}\n - URL: {}\n - Published Date: {}\n - Duration: {}\n - Title: {}\n - Size: {}\n - Is Starred: {}\n - Podcast UUID: {}\n - Podcast Title: {}\n - Author: {}\n - Date Added: {}'.format(
+            self.id, self.episode_uuid, self.url, self.published_date, self.duration, self.title, self.size, self.is_starred, self.podcast_uuid, self.podcast_title, self.author, self.date_added
         )
