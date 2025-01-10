@@ -90,6 +90,10 @@ def diff_history(incoming_history, saved_history):
     return list(saved_deque)
 
 if __name__ == "__main__":
+    CALL_API = False
+    LOAD_SAMPLE = False
+    CREATE_DB = False
+    TRY_DIFF = True
 
     # load credentials
     load_dotenv()
@@ -100,53 +104,54 @@ if __name__ == "__main__":
         print('PASSWORD environment variable does not exist.')
         sys.exit()
 
-    # http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
-    # token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
-    # history = get_history(http, token)
-    # with open('data3.json', 'w', encoding='utf-8') as file:
-    #     json.dump(history, file)
+    if CALL_API:
+        http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
+        token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
+        history = get_history(http, token)
+        with open('data4.json', 'w', encoding='utf-8') as file:
+            json.dump(history, file)
+    
+    if LOAD_SAMPLE:
+         # read sample json into memory
+        with open('data1.json', 'r', encoding='utf-8') as file:
+            history = json.load(file)
 
-    # read sample json into memory
-    with open('data1.json', 'r', encoding='utf-8') as file:
-        history = json.load(file)
+    if CREATE_DB:
+        # - Create the SQLite database
+        connection = create_database('pocketcasts.db')
+        if connection:
+            for episode in history['episodes'][::-1]:
+                insert_data(connection, (
+                    episode['uuid'],
+                    episode['url'],
+                    episode['published'],
+                    episode['duration'], 
+                    episode['title'],
+                    episode['size'],
+                    episode['starred'],
+                    episode['podcastUuid'],
+                    episode['podcastTitle'],
+                    episode['author']))
+                
+        connection.close()
 
-    # fetch the last 100 items stored in the db
-    connection = sqlite3.connect('pocketcasts2.db')
+    if TRY_DIFF:
+        # fetch the last 100 items stored in the db
+        connection = sqlite3.connect('pocketcasts.db')
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM PocketCasts_Listening_History ORDER BY ID LIMIT 100')
+        saved_history = cursor.fetchall()
+        packaged_saved_history = ListenRecord.Convert_List(saved_history)
 
-    # if it is not found then create the database
-    # code for this ^ here
+        # get latest data
+        latest_history = []
+        with open('data3.json', 'r', encoding='utf-8') as file:
+            latest_history = json.load(file)
 
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM PocketCasts_Listening_History ORDER BY ID LIMIT 100')
-    saved_history = cursor.fetchall()
-    packaged_saved_history = ListenRecord.Convert_List(saved_history)
+        pkgd_latest_history = []
+        for item in latest_history['episodes']:
+            pkgd_latest_history.append(ListenRecord.From_Dictionary(item))
 
-    # get latest data
-    latest_history = []
-    with open('data3.json', 'r', encoding='utf-8') as file:
-        latest_history = json.load(file)
-
-    pkgd_latest_history = []
-    for item in latest_history['episodes']:
-        pkgd_latest_history.append(ListenRecord.From_Dictionary(item))
-
-    # diff here
-    results = diff_history(pkgd_latest_history, packaged_saved_history)
-    print('fo')
-
-    # # - Create the SQLite database
-    # connection = create_database('pocketcasts2.db')
-    # if connection:
-    #     for episode in history['episodes'][::-1]:
-    #         insert_data(connection, (
-    #             episode['uuid'],
-    #             episode['url'],
-    #             episode['published'],
-    #             episode['duration'], 
-    #             episode['title'],
-    #             episode['size'],
-    #             episode['starred'],
-    #             episode['podcastUuid'],
-    #             episode['podcastTitle'],
-    #             episode['author']))
-    # connection.close()
+        # diff here
+        results = diff_history(pkgd_latest_history, packaged_saved_history)
+        print('fo')
