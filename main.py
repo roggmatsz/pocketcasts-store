@@ -26,7 +26,7 @@ def create_database(db_name='pocketcasts.db'):
     """
 
     try:
-        connection = sqlite3.connect('pocketcasts.db')
+        connection = sqlite3.connect(db_name)
         cursor = connection.cursor()
         cursor.execute(table_schema)
         connection.commit()
@@ -82,17 +82,18 @@ if __name__ == "__main__":
     # http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
     # token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
     # history = get_history(http, token)
-    # with open('data1.json', 'w', encoding='utf-8') as file:
-    # json.dump(history, file)
+    # with open('data3.json', 'w', encoding='utf-8') as file:
+    #     json.dump(history, file)
 
     # read sample json into memory
-    with open('data.json', 'r', encoding='utf-8') as file:
+    with open('data3.json', 'r', encoding='utf-8') as file:
         history = json.load(file)   
 
     # - Create the SQLite database
-    connection = create_database()
+    connection = create_database('pocketcasts2.db')
     if connection:
-        for episode in history['episodes']:
+        episode_history = history['episodes']
+        for episode in episode_history.reverse():
             insert_data(connection, (
                 episode['uuid'],
                 episode['url'],
@@ -106,4 +107,4 @@ if __name__ == "__main__":
                 episode['author'])
             )
         
-        connection.close()
+    #     connection.close()
