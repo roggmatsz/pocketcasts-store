@@ -27,7 +27,9 @@ class ListenRecord:
 
     @classmethod
     def From_Dictionary(cls, source_dictionary):
-        pass
+        id, episode_uuid, url, published_date, duration, title, size, is_starred, podcast_uuid, podcast_title, author, date_added = source_dictionary.values()
+
+        return cls(episode_uuid, url, published_date, duration, title, size, is_starred, podcast_uuid, podcast_title, author, date_added, id)
 
     @classmethod
     def From_Row_List(cls, source_list):
@@ -46,8 +48,7 @@ class ListenRecord:
                     self.is_starred == other.is_starred and
                     self.podcast_uuid == other.podcast_uuid and
                     self.podcast_title == other.podcast_title and
-                    self.author == other.author and
-                    self.date_added == other.date_added)
+                    self.author == other.author)
         
         return False
     
