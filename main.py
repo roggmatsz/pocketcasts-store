@@ -29,13 +29,78 @@ def create_database(db_name='pocketcasts.db'):
                 Date_Saved DATETIME DEFAULT CURRENT_TIMESTAMP)
         ''')
 
+    return connection
+
+def get_saved_data(db_connection: sqlite3.Connection, count=100):
+    if not db_connection:
+        print("Error: No Database connection.")
+        return
+
+    with db_connection:
+        cursor = db_connection.cursor()
+        cursor.execute(f'''
+            SELECT Episode_UUID, URL, Published_Date, Duration, Title, Size, Is_Starred, Podcast_UUID, Podcast_Title, Author, Date_Saved
+            FROM Listening_History
+            ORDER BY Date_Saved DESC
+            LIMIT {count}
+        ''')
+        return cursor.fetchall()
+    
+def diff_records(db_connection, incoming, saved):
+    if not incoming:
+        return 0
+    
+    with db_connection:
+        cursor = db_connection.cursor()
+        cursor.execute(f'''
+            SELECT Episode_UUID
+            FROM Listening_History
+            WHERE episode_uuid IN ({ ','.join(['?'] * len(incoming)) })
+        ''', [ record['uuid'] for record in incoming ])
+
+        existing_uuids = { row[0] for row in cursor.fetchall() }
+
+        records_to_insert = [
+            record for record in incoming if record['uuid'] not in existing_uuids
+        ]
+
+        if records_to_insert:
+            cursor.executemany('''
+                INSERT INTO Listening_History (
+                    Episode_UUID,
+                    URL,
+                    Published_Date,
+                    Duration,
+                    Title,
+                    Size,
+                    Is_Starred,
+                    Podcast_UUID,
+                    Podcast_Title,
+                    Author
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', [(
+                    record['uuid'],
+                    record['url'],
+                    record['published'],
+                    record['duration'],
+                    record['title'],
+                    record['size'],
+                    record['starred'],
+                    record['podcastUuid'],
+                    record['podcastTitle'],
+                    record['author']
+                ) for record in reversed(records_to_insert)
+            ])
+        return len(records_to_insert)
+
 def insert_data(connection, data):
     if not connection:
         print("Error: No Database connection.")
         return
     
     sql_insert_command = """
-        INSERT INTO PocketCasts_Listening_History (
+        INSERT INTO Listening_History (
             Episode_UUID,
             URL,
             Published_Date,
@@ -80,7 +145,7 @@ def diff_history(incoming_history, saved_history):
 
 if __name__ == "__main__":
     CALL_API = False
-    LOAD_SAMPLE = False
+    LOAD_SAMPLE = True
     CREATE_DB = False
     TRY_DIFF = True
 
@@ -102,45 +167,60 @@ if __name__ == "__main__":
     
     if LOAD_SAMPLE:
          # read sample json into memory
-        with open('data1.json', 'r', encoding='utf-8') as file:
+        with open('data4.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
-    if CREATE_DB:
-        # - Create the SQLite database
-        connection = create_database('pocketcasts.db')
-        if connection:
-            for episode in history['episodes'][::-1]:
-                insert_data(connection, (
-                    episode['uuid'],
-                    episode['url'],
-                    episode['published'],
-                    episode['duration'], 
-                    episode['title'],
-                    episode['size'],
-                    episode['starred'],
-                    episode['podcastUuid'],
-                    episode['podcastTitle'],
-                    episode['author']))
+    connection = create_database('pocketcasts.db')
+    print(diff_records(connection, history['episodes'], get_saved_data(connection)))
+    # for episode in history['episodes'][::-1]:
+    #     insert_data(connection, (
+    #         episode['uuid'],
+    #         episode['url'],
+    #         episode['published'],
+    #         episode['duration'], 
+    #         episode['title'],
+    #         episode['size'],
+    #         episode['starred'],
+    #         episode['podcastUuid'],
+    #         episode['podcastTitle'],
+    #         episode['author']))
+
+    # if CREATE_DB:
+    #     # - Create the SQLite database
+    #     connection = create_database('pocketcasts.db')
+    #     if connection:
+    #         for episode in history['episodes'][::-1]:
+    #             insert_data(connection, (
+    #                 episode['uuid'],
+    #                 episode['url'],
+    #                 episode['published'],
+    #                 episode['duration'], 
+    #                 episode['title'],
+    #                 episode['size'],
+    #                 episode['starred'],
+    #                 episode['podcastUuid'],
+    #                 episode['podcastTitle'],
+    #                 episode['author']))
                 
-        connection.close()
+    #     connection.close()
 
-    if TRY_DIFF:
-        # fetch the last 100 items stored in the db
-        connection = sqlite3.connect('pocketcasts.db')
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM PocketCasts_Listening_History ORDER BY ID LIMIT 100')
-        saved_history = cursor.fetchall()
-        packaged_saved_history = ListenRecord.Convert_List(saved_history)
+    # if TRY_DIFF:
+    #     # fetch the last 100 items stored in the db
+    #     connection = sqlite3.connect('pocketcasts.db')
+    #     cursor = connection.cursor()
+    #     cursor.execute('SELECT * FROM PocketCasts_Listening_History ORDER BY ID LIMIT 100')
+    #     saved_history = cursor.fetchall()
+    #     packaged_saved_history = ListenRecord.Convert_List(saved_history)
 
-        # get latest data
-        latest_history = []
-        with open('data3.json', 'r', encoding='utf-8') as file:
-            latest_history = json.load(file)
+    #     # get latest data
+    #     latest_history = []
+    #     with open('data3.json', 'r', encoding='utf-8') as file:
+    #         latest_history = json.load(file)
 
-        pkgd_latest_history = []
-        for item in latest_history['episodes']:
-            pkgd_latest_history.append(ListenRecord.From_Dictionary(item))
+    #     pkgd_latest_history = []
+    #     for item in latest_history['episodes']:
+    #         pkgd_latest_history.append(ListenRecord.From_Dictionary(item))
 
-        # diff here
-        results = diff_history(pkgd_latest_history, packaged_saved_history)
-        print('fo')
+    #     # diff here
+    #     results = diff_history(pkgd_latest_history, packaged_saved_history)
+    #     print('fo')
