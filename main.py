@@ -8,7 +8,7 @@ from pocketcasts import get_history
 import sqlite3
 import json
 
-def create_database(db_name='pocketcasts.db'):
+def create_database(db_name='pocketcasts.db') -> sqlite3.Connection:
     with sqlite3.connect(db_name) as connection:
         cursor = connection.cursor()
         cursor.execute(f'''
@@ -29,7 +29,7 @@ def create_database(db_name='pocketcasts.db'):
 
     return connection
 
-def get_saved_data(db_connection: sqlite3.Connection, count=100):
+def get_saved_data(db_connection: sqlite3.Connection, count=100) -> list:
     if not db_connection:
         print("Error: No Database connection.")
         return
@@ -44,7 +44,7 @@ def get_saved_data(db_connection: sqlite3.Connection, count=100):
         ''')
         return cursor.fetchall()
     
-def diff_records(db_connection, incoming, saved):
+def diff_records(db_connection: sqlite3.Connection, incoming, saved) -> int:
     if not incoming:
         return 0
     
