@@ -44,7 +44,7 @@ def get_saved_data(db_connection: sqlite3.Connection, count=100) -> list:
         ''')
         return cursor.fetchall()
     
-def diff_records(db_connection: sqlite3.Connection, incoming, saved) -> int:
+def process_new_records(db_connection: sqlite3.Connection, incoming: list[dict]) -> int:
     if not incoming:
         return 0
     
@@ -109,12 +109,12 @@ if __name__ == "__main__":
         http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
         token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
         history = get_history(http, token)
-        with open('data5.json', 'w', encoding='utf-8') as file:
-            json.dump(history, file)
+        with open('data7.json', 'w', encoding='utf-8') as file:
+            json.dump(history, file, ensure_ascii=False, indent=4)
     
     if LOAD_SAMPLE: # read sample json into memory
-        with open('data4.json', 'r', encoding='utf-8') as file:
+        with open('data.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
     connection = create_database('pocketcasts.db')
-    print(diff_records(connection, history['episodes'], get_saved_data(connection)))
+    print(process_new_records(connection, history['episodes']))
