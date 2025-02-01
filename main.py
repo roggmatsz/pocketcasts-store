@@ -109,11 +109,9 @@ if __name__ == "__main__":
         http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
         token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
         history = get_history(http, token)
-        with open('data7.json', 'w', encoding='utf-8') as file:
-            json.dump(history, file, ensure_ascii=False, indent=4)
     
     if LOAD_SAMPLE: # read sample json into memory
-        with open('data.json', 'r', encoding='utf-8') as file:
+        with open('data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
     connection = create_database('pocketcasts.db')
