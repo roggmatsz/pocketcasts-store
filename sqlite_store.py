@@ -3,7 +3,7 @@ import sqlite3
 class SQLiteStore():
     def __init__(self, db_name: str):
         self.db_name = db_name
-        return self.create_database()
+        self.db_connection = self.create_database()
 
     def create_database(self) -> sqlite3.Connection:
         with sqlite3.connect(self.db_name) as connection:
@@ -26,7 +26,19 @@ class SQLiteStore():
         return connection
 
     def get_records(self, count=100) -> list:
-        pass
+        if not self.db_connection:
+            print("Error: No Database connection.")
+            return
+
+        with self.db_connection:
+            cursor = self.db_connection.cursor()
+            cursor.execute(f'''
+                SELECT Episode_UUID, URL, Published_Date, Duration, Title, Size, Is_Starred, Podcast_UUID, Podcast_Title, Author, Date_Saved
+                FROM Listening_History
+                ORDER BY Date_Saved DESC
+                LIMIT {count}
+            ''')
+            return cursor.fetchall()
 
     def get_records_by_uuid(self, uuids: list) -> list:
         pass
