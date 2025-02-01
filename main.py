@@ -7,42 +7,6 @@ from pocketcasts import get_history
 
 import sqlite3
 import json
-
-def create_database(db_name='pocketcasts.db') -> sqlite3.Connection:
-    with sqlite3.connect(db_name) as connection:
-        cursor = connection.cursor()
-        cursor.execute(f'''
-            CREATE TABLE IF NOT EXISTS Listening_History (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                Episode_UUID TEXT NOT NULL,
-                URL TEXT NOT NULL,
-                Published_Date TEXT NOT NULL,
-                Duration INTEGER,
-                Title TEXT NOT NULL,
-                Size INTEGER NOT NULL,
-                Is_Starred BOOLEAN DEFAULT 0 CHECK (Is_Starred IN (0, 1)),
-                Podcast_UUID TEXT NOT NULL,
-                Podcast_Title TEXT NOT NULL,
-                Author TEXT NOT NULL,
-                Date_Saved DATETIME DEFAULT CURRENT_TIMESTAMP)
-        ''')
-
-    return connection
-
-def get_saved_data(db_connection: sqlite3.Connection, count=100) -> list:
-    if not db_connection:
-        print("Error: No Database connection.")
-        return
-
-    with db_connection:
-        cursor = db_connection.cursor()
-        cursor.execute(f'''
-            SELECT Episode_UUID, URL, Published_Date, Duration, Title, Size, Is_Starred, Podcast_UUID, Podcast_Title, Author, Date_Saved
-            FROM Listening_History
-            ORDER BY Date_Saved DESC
-            LIMIT {count}
-        ''')
-        return cursor.fetchall()
     
 def process_new_records(db_connection: sqlite3.Connection, incoming: list[dict]) -> int:
     if not incoming:
