@@ -55,4 +55,40 @@ class SQLiteStore():
         return cursor.fetchall()
 
     def save_records(self, records: list[dict]) -> int:
-        pass
+        if not records:
+            return 0
+        
+        if not self.db_connection:
+            print("Error: No Database connection.")
+            return
+        
+        cursor = self.db_connection.cursor()
+        cursor.executemany('''
+            INSERT INTO Listening_History (
+                Episode_UUID,
+                URL,
+                Published_Date,
+                Duration,
+                Title,
+                Size,
+                Is_Starred,
+                Podcast_UUID,
+                Podcast_Title,
+                Author
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', [(
+                record['uuid'],
+                record['url'],
+                record['published'],
+                record['duration'],
+                record['title'],
+                record['size'],
+                record['starred'],
+                record['podcastUuid'],
+                record['podcastTitle'],
+                record['author']
+            ) for record in reversed(records)
+        ])
+        
+        return len(records)
