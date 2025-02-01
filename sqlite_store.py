@@ -40,8 +40,19 @@ class SQLiteStore():
             ''')
             return cursor.fetchall()
 
-    def get_records_by_uuid(self, uuids: list) -> list:
-        pass
+    def get_records_by_uuid(self, records: list) -> list:
+        if not self.db_connection:
+            print("Error: No Database connection.")
+            return
+        
+        cursor = self.db_connection.cursor()
+        cursor.execute(f'''
+            SELECT Episode_UUID
+            FROM Listening_History
+            WHERE episode_uuid IN ({ ','.join(['?'] * len(records)) })
+        ''', [ record['uuid'] for record in records ])
+        
+        return cursor.fetchall()
 
     def save_records(self, records: list[dict]) -> int:
         pass
