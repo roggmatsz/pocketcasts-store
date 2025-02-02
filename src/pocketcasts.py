@@ -1,6 +1,6 @@
 import json
 
-from auth import create_auth_headers
+from .auth import create_auth_headers
 
 def get_history(http, token):
     header = create_auth_headers(token)
