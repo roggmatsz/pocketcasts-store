@@ -5,6 +5,10 @@ class SQLiteStore():
         self.db_name = db_name
         self.db_connection = self.create_database()
 
+    def close(self):
+        if self.db_connection:
+            self.db_connection.close()
+
     def create_database(self) -> sqlite3.Connection:
         with sqlite3.connect(self.db_name) as connection:
             cursor = connection.cursor()
