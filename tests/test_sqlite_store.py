@@ -37,7 +37,6 @@ def test_save_records(data_store, dataset1):
 
 def test_get_records(data_store, dataset1):
     data_store.save_records(dataset1['episodes'])
-
     records = data_store.get_records()
 
     assert len(records) == len(dataset1['episodes'])
@@ -51,3 +50,14 @@ def test_get_records(data_store, dataset1):
     assert records[0][7] == dataset1['episodes'][-1]['podcastUuid']
     assert records[0][8] == dataset1['episodes'][-1]['podcastTitle']
     assert records[0][9] == dataset1['episodes'][-1]['author']
+
+def test_get_records_by_uuid(data_store, dataset1):
+    data_store.save_records(dataset1['episodes'])
+    records = data_store.get_records()
+
+    uuids = [ record[0] for record in records ]
+    records_by_uuid = data_store.get_records_by_uuid(dataset1['episodes'])
+
+    assert len(records_by_uuid) == len(dataset1['episodes'])
+    for record in records_by_uuid:
+        assert record[0] in uuids
