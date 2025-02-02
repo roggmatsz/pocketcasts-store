@@ -1,20 +1,3 @@
-import pytest
-import json
-
-from src.sqlite_store import SQLiteStore
-
-@pytest.fixture
-def data_store():
-    store = SQLiteStore(':memory:')
-    yield store
-    store.close()
-
-@pytest.fixture
-def dataset1():
-    with open('tests/data.json') as file:
-        return json.load(file)
-    
-
 def test_table_creation(data_store):
     cursor = data_store.db_connection.cursor()
 
