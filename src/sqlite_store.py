@@ -94,5 +94,6 @@ class SQLiteStore():
                 record['author']
             ) for record in reversed(records)
         ])
+        self.db_connection.commit()
         
         return len(records)
