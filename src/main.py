@@ -1,60 +1,22 @@
 import os
 import sys
 from dotenv import load_dotenv
-
-from auth import *
-from pocketcasts import get_history
-
-import sqlite3
 import json
+
+from .auth import *
+from .pocketcasts import get_history
+from .sqlite_store import SQLiteStore
     
-def process_new_records(db_connection: sqlite3.Connection, incoming: list[dict]) -> int:
+def diff_records(incoming: list[dict], existing: tuple) -> list:
     if not incoming:
         return 0
     
-    with db_connection:
-        cursor = db_connection.cursor()
-        cursor.execute(f'''
-            SELECT Episode_UUID
-            FROM Listening_History
-            WHERE episode_uuid IN ({ ','.join(['?'] * len(incoming)) })
-        ''', [ record['uuid'] for record in incoming ])
+    existing_uuids = { record[0] for record in existing }
+    records_to_insert = [
+        record for record in incoming if record['uuid'] not in existing_uuids
+    ]
 
-        existing_uuids = { row[0] for row in cursor.fetchall() }
-
-        records_to_insert = [
-            record for record in incoming if record['uuid'] not in existing_uuids
-        ]
-
-        if records_to_insert:
-            cursor.executemany('''
-                INSERT INTO Listening_History (
-                    Episode_UUID,
-                    URL,
-                    Published_Date,
-                    Duration,
-                    Title,
-                    Size,
-                    Is_Starred,
-                    Podcast_UUID,
-                    Podcast_Title,
-                    Author
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', [(
-                    record['uuid'],
-                    record['url'],
-                    record['published'],
-                    record['duration'],
-                    record['title'],
-                    record['size'],
-                    record['starred'],
-                    record['podcastUuid'],
-                    record['podcastTitle'],
-                    record['author']
-                ) for record in reversed(records_to_insert)
-            ])
-        return len(records_to_insert)
+    return records_to_insert
 
 if __name__ == "__main__":
     CALL_API = True
@@ -75,8 +37,12 @@ if __name__ == "__main__":
         history = get_history(http, token)
     
     if LOAD_SAMPLE: # read sample json into memory
-        with open('data7.json', 'r', encoding='utf-8') as file:
+        with open('tests/data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
-    connection = create_database('pocketcasts.db')
-    print(process_new_records(connection, history['episodes']))
+    store = SQLiteStore('pocketcasts.db')
+    saved_records = store.get_records()
+    new_records = diff_records(history['episodes'], saved_records)
+    store.save_records(new_records)
+    print(len(new_records))
+    store.close()
