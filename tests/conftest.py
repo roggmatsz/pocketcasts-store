@@ -23,3 +23,18 @@ def dataset2(scope='session'):
 def dataset3(scope='session'):
     with open('tests/data3.json') as file:
         return json.load(file)
+    
+@pytest.fixture
+def dataset4(scope='session'):
+    with open('tests/data4.json') as file:
+        return json.load(file)
+
+@pytest.fixture
+def dataset5(scope='session'):
+    with open('tests/data5.json') as file:
+        return json.load(file)
+    
+@pytest.fixture
+def dataset6(scope='session'):
+    with open('tests/data6.json') as file:
+        return json.load(file)
