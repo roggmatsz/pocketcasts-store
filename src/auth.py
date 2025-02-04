@@ -9,7 +9,6 @@ def do_login(http, user, pw):
 
     data = {"email": f"{user}", "password": f"{pw}", "scope": "webplayer"}
     encoded_data = json.dumps(data).encode("utf-8")
-    print(encoded_data)
     http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
     response = http.request(
         "POST",
@@ -18,7 +17,6 @@ def do_login(http, user, pw):
         body=encoded_data,
     )
     token = json.loads(response.data)["token"]
-    print(token)
     return token
 
 
