@@ -10,8 +10,9 @@ ENV PIP_NO_CACHE_DIR=1
 # Sets directory in the container where the source will reside.
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copies the requirements file to the container to make use of Docker cache.
 COPY requirements.txt .
@@ -34,16 +35,13 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 COPY . .
 
-# create a directory where the database can be mounted to.
-RUN mkdir /app/data
-
 # set path to be the virtual environment
 ENV PATH="/opt/venv/bin:$PATH"
 
 # set user to be appuser
 USER appuser
 
-CMD ["python", "main.py"]
+CMD ["python", "-m", "src.main"]
 
 
 
