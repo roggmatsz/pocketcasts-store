@@ -35,11 +35,18 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 COPY . .
 
-# set path to be the virtual environment
-ENV PATH="/opt/venv/bin:$PATH"
+RUN chown -R appuser:appuser /app
+
 
 # set user to be appuser
 USER appuser
+
+# set up data folder
+RUN mkdir -p /app/data
+RUN chown -R appuser:appuser /app/data
+
+# set path to be the virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
 
 CMD ["python", "-m", "src.main"]
 
