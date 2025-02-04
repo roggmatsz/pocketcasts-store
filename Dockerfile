@@ -1,11 +1,11 @@
-FROM python:3:13-slim as builder
+FROM python:3.13-slim AS builder
 
 # prevents Python from generating .pyc or .pyo files. Saves space.
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONDONTWRITEBYTECODE=1
 # disables output buffering, enabling realtime logging.
-ENV PYTHONBUFFERED 1
+ENV PYTHONBUFFERED=1
 # prevents pip from storing downloaded packages in a cache directory.
-ENV PIP_NO_CACHE_DIR 1
+ENV PIP_NO_CACHE_DIR=1
 
 # Sets directory in the container where the source will reside.
 WORKDIR /app
