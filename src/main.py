@@ -18,6 +18,14 @@ def diff_records(incoming: list[dict], existing: tuple) -> list:
 
     return records_to_insert
 
+def getDB_path():
+    if os.path.exists('/.dockerenv'):
+        # Path when running in Docker container
+        return '/app/data/pockecasts.sqlite'
+    else:
+        # Path when running locally
+        return 'data/pocketcasts.sqlite'
+
 if __name__ == "__main__":
     CALL_API = True
     LOAD_SAMPLE = False
@@ -40,7 +48,7 @@ if __name__ == "__main__":
         with open('tests/data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
-    store = SQLiteStore('data/pocketcasts.db')
+    store = SQLiteStore(getDB_path())
     saved_records = store.get_records()
     new_records = diff_records(history['episodes'], saved_records)
     store.save_records(new_records)
