@@ -12,3 +12,5 @@ tests/
 *.log
 .dockerignore
 Dockerfile
+README.md
+pytest.ini
