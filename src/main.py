@@ -40,7 +40,7 @@ if __name__ == "__main__":
         with open('tests/data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
-    store = SQLiteStore('pocketcasts.db')
+    store = SQLiteStore('data/pocketcasts.db')
     saved_records = store.get_records()
     new_records = diff_records(history['episodes'], saved_records)
     store.save_records(new_records)
