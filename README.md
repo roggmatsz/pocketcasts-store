@@ -9,4 +9,10 @@ Create a function that looks for records with Size equal to 0, pulls podcast fil
 
 Dockerize script for deployment.
 
-Create unit testing suite.
+User Docker secrets to safely load Pocketcasts credentials into container.
+
+Add performance unit tests.
+
+Add logging logic that will cache all errors or stdout messages to separate SQLite file for monitoring.
+
+~~Create unit testing suite.~~
