@@ -22,10 +22,10 @@ def getDB_path():
     path = ''
     if os.path.exists('/.dockerenv'):
         # Path when running in Docker container
-        path = '/app/data/pockecasts.sqlite'
+        path = '/app/data/pockecasts.db'
     else:
         # Path when running locally
-        path = 'data/pocketcasts.sqlite'
+        path = 'data/pocketcasts.db'
 
     # confirm directory exists
     os.makedirs(os.path.dirname(path), exist_ok=True)
