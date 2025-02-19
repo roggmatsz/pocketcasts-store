@@ -93,13 +93,41 @@ jobs:
           [[ -z "$minor" ]] && minor="0"
           [[ -z "$revision" ]] && revision="1"
           
-          new_tag="v${major}.${minor}.${revision}"
+          new_tag="${major}.${minor}.${revision}"
           echo "Generated tag: $new_tag"
           echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+
+      - name: Update setup.py
+        run: |
+          # Create backup
+          cp setup.py setup.py.bak
+          
+          # Update version in setup.py
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS version of sed
+            sed -i '' 's/version="[^"]*"/version="${{ env.NEW_TAG}}"/g' setup.py
+            sed -i '' "s/version='[^']*'/version='${{ env.NEW_TAG }}'/g" setup.py
+          else
+            # Linux version of sed
+            sed -i 's/version="[^"]*"/version="${{ env.NEW_TAG }}"/g' setup.py
+            sed -i "s/version='[^']*'/version='${{ env.NEW_TAG }}'/g" setup.py
+          fi
+          
+          echo "Updated setup.py contents:"
+          cat setup.py
+        
+      - name: Commit and push setup.py changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add setup.py
+          git commit -m "Update version to ${{ env.NEW_TAG }}"
+          git push origin HEAD:main
       
       - name: Create and push tag
         run: |
-          if [[ ! "${{ env.NEW_TAG }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          if [[ ! "${{ env.NEW_TAG }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Error: Invalid tag format: ${{ env.NEW_TAG }}"
             exit 1
           fi
@@ -109,10 +137,10 @@ jobs:
           
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           
-          git tag -a ${{ env.NEW_TAG }} -m "Release ${{ env.NEW_TAG }}
+          git tag -a "v${{ env.NEW_TAG }}" -m "Release v${{ env.NEW_TAG }}
           
           Major: Controlled via setup.py
           Minor: PR #${{ env.MINOR_VERSION }} since last major version
           Revision: ${{ env.REVISION }} commits in this PR"
           
-          git push origin ${{ env.NEW_TAG }}
+          git push origin "v${{ env.NEW_TAG }}"
