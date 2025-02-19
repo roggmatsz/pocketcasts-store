@@ -1,0 +1,51 @@
+name: Release
+
+on: 
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  bump-version-and-tag:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0
+      - name: Bump version
+        id: bump_version
+        run: |
+          python bump_version.py
+          echo "::set-output name=new_version::$(cat version.txt)"
+        
+      - name: Create tag
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const newVersion = `v${{ steps.bump_version.outputs.new_version }}`;
+            console.log(`Tagging version ${newVersion}`);
+            await github.rest.git.createTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: `v${newVersion}`,
+              message: `Release ${newVersion}`,
+              sha: context.sha,
+              type: 'commit'
+            });
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/heads/release/v${newVersion}`,
+              sha: context.sha
+            })
+      - name: Update setup.py
+        run: |
+          sed -i "s/version='.*'/version='${{ steps.bump_version.outputs.new_version }}'/g" setup.py
+        
+      - name: Commit setup.py changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Updated version in setup.py to ${{ steps.bump_version.outputs.new_version }}"
+          file_pattern: setup.py
