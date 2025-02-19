@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read
 
 jobs:
   create-tag:
@@ -33,18 +34,22 @@ jobs:
       - name: Get major version from setup.py
         id: get-major
         run: |
-          if [ -f setup.py ]; then
-            major_version=$(grep -oP 'version="\K\d+' setup.py || echo "")
-            if [ -z "$major_version" ]; then
-              echo "Error: Could not find valid major version in setup.py"
-              echo "MAJOR_VERSION=0" >> $GITHUB_ENV
-            else
-              echo "MAJOR_VERSION=$major_version" >> $GITHUB_ENV
-            fi
-          else
-            echo "Warning: setup.py not found, defaulting to major version 0"
-            echo "MAJOR_VERSION=0" >> $GITHUB_ENV
+          if [ ! -f setup.py ]; then
+            echo "Error: setup.py not found"
+            exit 1
           fi
+          
+          major_version=$(grep -oP "version='\K\d+" setup.py || echo "")
+          
+          if [ -z "$major_version" ]; then
+            echo "Error: Could not find valid major version in setup.py"
+            echo "Current directory: $(pwd)"
+            echo "Files in directory: $(ls -la)"
+            exit 1
+          fi
+          
+          echo "Found major version: $major_version"
+          echo "MAJOR_VERSION=$major_version" >> $GITHUB_ENV
         
       - name: Count merged PRs
         id: count-prs
