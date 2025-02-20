@@ -7,6 +7,7 @@ Python service that caches user playback and starred data from the Pocketcasts p
 
 Use GitHub Actions to track version number.
 - Update revision number only when making merges from a feature branch to staging.
+- Sync staging after successful PRs to main.
 - ~~Update minor number when completing PRs to main~~.
 - ~~Update major at will.~~
 
