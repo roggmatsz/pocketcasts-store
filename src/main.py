@@ -2,6 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 import json
+import logging
 
 from .auth import *
 from .pocketcasts import get_history
@@ -41,17 +42,33 @@ def getDB_path():
 
     return path 
 
+def configure_logging():
+    logger = logging.getLogger('app')
+    logger.setLevel(logging.DEBUG)
+
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setLevel(logging.DEBUG)
+    stdout_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    stdout_handler.setFormatter(stdout_formatter)
+    logger.addHandler(stdout_handler)
+
+    return logger
+
 if __name__ == "__main__":
     CALL_API = True
     LOAD_SAMPLE = False
+
+    logger = configure_logging()
 
     # load credentials
     load_dotenv()
     if not 'USERNAME' in os.environ:
         print('USERNAME environment variable does not exist.')
+        logger.debug('USERNAME environment variable does not exist.')
         sys.exit()
     if not 'PASSWORD' in os.environ:
         print('PASSWORD environment variable does not exist.')
+        logger.debug('PASSWORD environment variable does not exist.')
         sys.exit()
 
     if CALL_API:
