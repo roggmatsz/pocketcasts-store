@@ -67,5 +67,5 @@ if __name__ == "__main__":
     saved_records = store.get_records()
     new_records = diff_records(history['episodes'], saved_records)
     store.save_records(new_records)
-    print(len(new_records))
+    print(f'{len(new_records)} were added.')
     store.close()
