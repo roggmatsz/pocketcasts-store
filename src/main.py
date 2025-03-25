@@ -55,10 +55,16 @@ def configure_logging():
     return logger
 
 if __name__ == "__main__":
-    CALL_API = True
-    LOAD_SAMPLE = False
+    CALL_API = False
+    LOAD_SAMPLE = True
 
     logger = configure_logging()
+
+    # look for flag to load sample data
+    if 'DEBUG_MODE' in os.environ and os.environ.get('DEBUG_MODE') == 'True':
+        LOAD_SAMPLE = True
+        CALL_API = False
+        logger.info('DEBUG_MODE is set to True. Loading sample data.')
 
     # load credentials
     load_dotenv()
@@ -77,6 +83,7 @@ if __name__ == "__main__":
         history = get_history(http, token)
     
     if LOAD_SAMPLE: # read sample json into memory
+        logger.info('Loading sample data.')
         with open('tests/data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
