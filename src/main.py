@@ -1,3 +1,4 @@
+import datetime
 import os
 import sys
 from dotenv import load_dotenv
@@ -47,6 +48,7 @@ if __name__ == "__main__":
     LOAD_SAMPLE = True
 
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.info(f'Starting at {datetime.datetime.now()}')
 
     # look for flag to load sample data
     if 'DEBUG_MODE' in os.environ and os.environ.get('DEBUG_MODE') == 'True':
