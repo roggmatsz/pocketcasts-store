@@ -84,7 +84,7 @@ if __name__ == "__main__":
         history = get_history(http, token)
     
     if LOAD_SAMPLE: # read sample json into memory
-        logger.info('Loading sample data.')
+        logger.debug('Loading sample data.')
         with open('tests/data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
@@ -92,5 +92,5 @@ if __name__ == "__main__":
     saved_records = store.get_records()
     new_records = diff_records(history['episodes'], saved_records)
     store.save_records(new_records)
-    print(f'{len(new_records)} were added.')
+    logger.info(f'{len(saved_records)} records added.')
     store.close()
