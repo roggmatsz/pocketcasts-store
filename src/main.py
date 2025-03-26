@@ -37,12 +37,12 @@ def getDB_path():
             f.write('test')
         os.remove(test_file)
     except PermissionError:
-        print(f"Permission denied when trying to write to {os.path.dirname(path)}")
+        logger.error(f"Permission denied when trying to write to {os.path.dirname(path)}")
         raise
 
     return path 
 
-def configure_logging():
+def configure_logging(db_path: str) -> logging.Logger:
     logger = logging.getLogger('app')
     logger.setLevel(logging.DEBUG)
 
@@ -58,13 +58,14 @@ if __name__ == "__main__":
     CALL_API = False
     LOAD_SAMPLE = True
 
-    logger = configure_logging()
+    DB_PATH = getDB_path()
+    logger = configure_logging(DB_PATH)
 
     # look for flag to load sample data
     if 'DEBUG_MODE' in os.environ and os.environ.get('DEBUG_MODE') == 'True':
         LOAD_SAMPLE = True
         CALL_API = False
-        logger.info('DEBUG_MODE is set to True. Loading sample data.')
+        logger.debug('DEBUG_MODE is set to True. Loading sample data.')
 
     # load credentials
     load_dotenv()
@@ -87,7 +88,7 @@ if __name__ == "__main__":
         with open('tests/data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
-    store = SQLiteStore(getDB_path())
+    store = SQLiteStore(DB_PATH)
     saved_records = store.get_records()
     new_records = diff_records(history['episodes'], saved_records)
     store.save_records(new_records)
