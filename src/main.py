@@ -70,12 +70,10 @@ if __name__ == "__main__":
     # load credentials
     load_dotenv()
     if not 'USERNAME' in os.environ:
-        print('USERNAME environment variable does not exist.')
-        logger.debug('USERNAME environment variable does not exist.')
+        logger.error('USERNAME environment variable was not found.')
         sys.exit()
     if not 'PASSWORD' in os.environ:
-        print('PASSWORD environment variable does not exist.')
-        logger.debug('PASSWORD environment variable does not exist.')
+        logger.error('PASSWORD environment variable was not found.')
         sys.exit()
 
     if CALL_API:
