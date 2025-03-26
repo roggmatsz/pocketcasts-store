@@ -58,7 +58,7 @@ if __name__ == "__main__":
     CALL_API = False
     LOAD_SAMPLE = True
 
-    logger = configure_logging()
+    logger = logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     # look for flag to load sample data
     if 'DEBUG_MODE' in os.environ and os.environ.get('DEBUG_MODE') == 'True':
