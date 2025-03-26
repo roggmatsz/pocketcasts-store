@@ -2,6 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 import json
+import logging
 
 from .auth import *
 from .pocketcasts import get_history
@@ -36,22 +37,42 @@ def getDB_path():
             f.write('test')
         os.remove(test_file)
     except PermissionError:
-        print(f"Permission denied when trying to write to {os.path.dirname(path)}")
+        logger.error(f"Permission denied when trying to write to {os.path.dirname(path)}")
         raise
 
     return path 
 
+def configure_logging() -> logging.Logger:
+    logger = logging.getLogger('app')
+    logger.setLevel(logging.DEBUG)
+
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setLevel(logging.DEBUG)
+    stdout_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    stdout_handler.setFormatter(stdout_formatter)
+    logger.addHandler(stdout_handler)
+
+    return logger
+
 if __name__ == "__main__":
-    CALL_API = True
-    LOAD_SAMPLE = False
+    CALL_API = False
+    LOAD_SAMPLE = True
+
+    logger = configure_logging()
+
+    # look for flag to load sample data
+    if 'DEBUG_MODE' in os.environ and os.environ.get('DEBUG_MODE') == 'True':
+        LOAD_SAMPLE = True
+        CALL_API = False
+        logger.debug('DEBUG_MODE is set to True. Loading sample data.')
 
     # load credentials
     load_dotenv()
     if not 'USERNAME' in os.environ:
-        print('USERNAME environment variable does not exist.')
+        logger.error('USERNAME environment variable was not found.')
         sys.exit()
     if not 'PASSWORD' in os.environ:
-        print('PASSWORD environment variable does not exist.')
+        logger.error('PASSWORD environment variable was not found.')
         sys.exit()
 
     if CALL_API:
@@ -60,6 +81,7 @@ if __name__ == "__main__":
         history = get_history(http, token)
     
     if LOAD_SAMPLE: # read sample json into memory
+        logger.debug('Loading sample data.')
         with open('tests/data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
@@ -67,5 +89,5 @@ if __name__ == "__main__":
     saved_records = store.get_records()
     new_records = diff_records(history['episodes'], saved_records)
     store.save_records(new_records)
-    print(len(new_records))
+    logger.info(f'{len(saved_records)} records added.')
     store.close()
