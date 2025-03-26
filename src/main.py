@@ -42,7 +42,7 @@ def getDB_path():
 
     return path 
 
-def configure_logging(db_path: str) -> logging.Logger:
+def configure_logging() -> logging.Logger:
     logger = logging.getLogger('app')
     logger.setLevel(logging.DEBUG)
 
@@ -58,8 +58,7 @@ if __name__ == "__main__":
     CALL_API = False
     LOAD_SAMPLE = True
 
-    DB_PATH = getDB_path()
-    logger = configure_logging(DB_PATH)
+    logger = configure_logging()
 
     # look for flag to load sample data
     if 'DEBUG_MODE' in os.environ and os.environ.get('DEBUG_MODE') == 'True':
@@ -86,7 +85,7 @@ if __name__ == "__main__":
         with open('tests/data7.json', 'r', encoding='utf-8') as file:
             history = json.load(file)
 
-    store = SQLiteStore(DB_PATH)
+    store = SQLiteStore(getDB_path())
     saved_records = store.get_records()
     new_records = diff_records(history['episodes'], saved_records)
     store.save_records(new_records)
