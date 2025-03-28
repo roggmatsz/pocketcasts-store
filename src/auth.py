@@ -23,6 +23,10 @@ def do_login(http, user, pw):
         raise Exception(f'Response: {response.data.decode("utf-8")}')
     
     token = json.loads(response.data)["token"]
+    if not token:
+        logging.fatal('Failed to retrieve token from login response.')
+        raise Exception('No token found in the response.')
+    
     return token
 
 
