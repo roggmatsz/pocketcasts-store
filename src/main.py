@@ -3,6 +3,7 @@ import sys
 from dotenv import load_dotenv
 import json
 import logging
+import time
 
 from .auth import *
 from .pocketcasts import get_history
@@ -45,10 +46,11 @@ def getDB_path():
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 if __name__ == "__main__":
+    start_time = time.time()
+    logging.info(f'Starting execution.')
+
     CALL_API = False
     LOAD_SAMPLE = True
-
-    logging.info(f'Starting execution.')
 
     # look for flag to load sample data
     if 'DEBUG_MODE' in os.environ and os.environ.get('DEBUG_MODE') == 'True':
@@ -59,11 +61,11 @@ if __name__ == "__main__":
     # load credentials
     load_dotenv(override=True)
     if not 'USERNAME' in os.environ:
-        logging.error('USERNAME environment variable was not found.')
+        logging.fatal('USERNAME environment variable was not found.')
         sys.exit()
-        
+
     if not 'PASSWORD' in os.environ:
-        logging.error('PASSWORD environment variable was not found.')
+        logging.fatal('PASSWORD environment variable was not found.')
         sys.exit()
 
     if CALL_API:
@@ -80,5 +82,6 @@ if __name__ == "__main__":
     saved_records = store.get_records()
     new_records = diff_records(history['episodes'], saved_records)
     store.save_records(new_records)
-    logging.info(f'{len(saved_records)} records added.')
     store.close()
+
+    logging.info(f'{len(saved_records)} records added. Took {time.time() - start_time:.2f} seconds.')
