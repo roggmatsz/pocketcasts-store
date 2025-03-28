@@ -1,5 +1,6 @@
 import json
 import urllib3
+import logging
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -16,6 +17,11 @@ def do_login(http, user, pw):
         headers={"Content-Type": "application/json"},
         body=encoded_data,
     )
+
+    if response.status != 200:
+        logging.fatal(f'Failed to login: {response.status}')
+        raise Exception(f'Response: {response.data.decode("utf-8")}')
+    
     token = json.loads(response.data)["token"]
     return token
 
