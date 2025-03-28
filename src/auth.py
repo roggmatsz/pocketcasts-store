@@ -29,6 +29,5 @@ def do_login(http, user, pw):
     
     return token
 
-
 def create_auth_headers(token):
     return {"Authorization": f"Bearer {token}"}
