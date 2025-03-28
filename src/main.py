@@ -42,11 +42,12 @@ def getDB_path():
 
     return path 
 
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 if __name__ == "__main__":
     CALL_API = False
     LOAD_SAMPLE = True
 
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logging.info(f'Starting execution.')
 
     # look for flag to load sample data
@@ -60,6 +61,7 @@ if __name__ == "__main__":
     if not 'USERNAME' in os.environ:
         logging.error('USERNAME environment variable was not found.')
         sys.exit()
+        
     if not 'PASSWORD' in os.environ:
         logging.error('PASSWORD environment variable was not found.')
         sys.exit()
