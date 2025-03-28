@@ -62,16 +62,20 @@ if __name__ == "__main__":
     load_dotenv(override=True)
     if not 'USERNAME' in os.environ:
         logging.fatal('USERNAME environment variable was not found.')
-        sys.exit()
+        sys.exit(1)
 
     if not 'PASSWORD' in os.environ:
         logging.fatal('PASSWORD environment variable was not found.')
-        sys.exit()
+        sys.exit(1)
 
     if CALL_API:
         http = urllib3.PoolManager(cert_reqs='CERT_NONE', assert_hostname=False)
-        token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
-        history = get_history(http, token)
+        try:
+            token = do_login(http, user=os.environ.get('USERNAME'), pw=os.environ.get('PASSWORD'))
+            history = get_history(http, token)
+        except Exception as e:
+            logging.error(f'Failed to login or retrieve history: {e}')
+            sys.exit(1)
     
     if LOAD_SAMPLE: # read sample json into memory
         logging.debug('Loading sample data.')
