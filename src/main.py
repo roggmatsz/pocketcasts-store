@@ -10,7 +10,7 @@ from .sqlite_store import SQLiteStore
     
 def diff_records(incoming: list[dict], existing: tuple) -> list:
     if not incoming:
-        return 0
+        return [] # Return empty list instead of 0
     
     existing_uuids = { record[0] for record in existing }
     records_to_insert = [
