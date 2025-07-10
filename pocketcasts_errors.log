@@ -3,3 +3,91 @@
 2025-06-25 00:29:17,388 ERROR Network error fetching history: HTTPSConnectionPool(host='api.pocketcasts.com', port=443): Max retries exceeded with url: /user/history (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fbbaff56c90>: Failed to establish a new connection: [Errno 111] Connection refused'))
 2025-06-25 00:29:26,838 ERROR Network error during login: HTTPSConnectionPool(host='api.pocketcasts.com', port=443): Max retries exceeded with url: /user/login (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f08af16d670>: Failed to establish a new connection: [Errno 111] Connection refused'))
 2025-06-25 00:29:26,840 ERROR Network error fetching history: HTTPSConnectionPool(host='api.pocketcasts.com', port=443): Max retries exceeded with url: /user/history (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f08af16ed20>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-07-10 03:29:17,802 ERROR Network error fetching history: <Mock spec='PoolManager' id='140098362360416'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:17,804 ERROR Network error fetching history: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,806 ERROR Network error fetching history: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,865 ERROR An unexpected error occurred fetching history: Something unexpected went wrong
+2025-07-10 03:29:17,867 ERROR An unexpected error occurred fetching history: Something unexpected went wrong
+2025-07-10 03:29:17,881 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:17,881 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:17,881 ERROR Network error searching podcasts: <Mock spec='PoolManager' id='140098362360416'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:17,883 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:17,883 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:17,883 ERROR Network error searching podcasts: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,884 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:17,884 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:17,884 ERROR Network error searching podcasts: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,901 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:17,902 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:17,902 ERROR An unexpected error occurred searching podcasts: A generic search error
+2025-07-10 03:29:17,903 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:17,903 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:17,903 ERROR An unexpected error occurred searching podcasts: A generic search error
+2025-07-10 03:29:17,916 ERROR Network error fetching subscriptions: <Mock spec='PoolManager' id='140098362360416'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:17,918 ERROR Network error fetching subscriptions: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,919 ERROR Network error fetching subscriptions: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,937 ERROR An unexpected error occurred fetching subscriptions: Subscriptions fetch failed
+2025-07-10 03:29:17,939 ERROR An unexpected error occurred fetching subscriptions: Subscriptions fetch failed
+2025-07-10 03:29:17,951 ERROR Network error adding subscription: <Mock spec='PoolManager' id='140098362360416'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:17,953 ERROR Network error adding subscription: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,954 ERROR Network error adding subscription: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,972 ERROR An unexpected error occurred adding subscription: Could not add subscription
+2025-07-10 03:29:17,974 ERROR An unexpected error occurred adding subscription: Could not add subscription
+2025-07-10 03:29:17,987 ERROR Network error fetching episodes: <Mock spec='PoolManager' id='140098362360416'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:17,988 ERROR Network error fetching episodes: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:17,990 ERROR Network error fetching episodes: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:18,008 ERROR An unexpected error occurred fetching episodes: Episode retrieval error
+2025-07-10 03:29:18,010 ERROR An unexpected error occurred fetching episodes: Episode retrieval error
+2025-07-10 03:29:18,027 ERROR An unexpected error occurred fetching episodes: Episode retrieval error
+2025-07-10 03:29:18,044 ERROR An unexpected error occurred fetching episodes: Episode retrieval error
+2025-07-10 03:29:18,057 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1}
+2025-07-10 03:29:18,057 ERROR Network error updating podcast episode: <Mock spec='PoolManager' id='140098362360416'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:18,058 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1}
+2025-07-10 03:29:18,059 ERROR Network error updating podcast episode: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:18,060 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1}
+2025-07-10 03:29:18,060 ERROR Network error updating podcast episode: <Mock spec='PoolManager' id='140098362360416'>: Failed to establish a new connection
+2025-07-10 03:29:18,077 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1}
+2025-07-10 03:29:18,077 ERROR An unexpected error occurred updating podcast episode: Update failed unexpectedly
+2025-07-10 03:29:18,079 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1, 'playedUpTo': 120}
+2025-07-10 03:29:18,079 ERROR An unexpected error occurred updating podcast episode: Update failed unexpectedly
+2025-07-10 03:29:29,031 ERROR Network error fetching history: <Mock spec='PoolManager' id='140615098243440'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:29,033 ERROR Network error fetching history: <Mock spec='PoolManager' id='140615098243440'>: Failed to establish a new connection
+2025-07-10 03:29:29,034 ERROR Failed to decode JSON response from history API: b'not valid json'
+2025-07-10 03:29:29,036 ERROR An unexpected error occurred fetching history: Something unexpected went wrong
+2025-07-10 03:29:29,039 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:29,039 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:29,039 ERROR Network error searching podcasts: <Mock spec='PoolManager' id='140615098243440'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:29,041 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:29,041 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:29,041 ERROR Network error searching podcasts: <Mock spec='PoolManager' id='140615098243440'>: Failed to establish a new connection
+2025-07-10 03:29:29,042 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:29,043 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:29,043 ERROR Failed to decode JSON response from podcast search API: b'not json at all'
+2025-07-10 03:29:29,044 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:29,044 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:29,044 ERROR An unexpected error occurred searching podcasts: A generic search error
+2025-07-10 03:29:29,046 DEBUG Search podcasts header: {'Authorization': 'Bearer mock_token', 'content-length': 21}
+2025-07-10 03:29:29,046 DEBUG Search podcasts body: b'{"term": "test term"}'
+2025-07-10 03:29:29,048 ERROR Network error fetching subscriptions: <Mock spec='PoolManager' id='140615098243440'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:29,049 ERROR Network error fetching subscriptions: <Mock spec='PoolManager' id='140615098243440'>: Failed to establish a new connection
+2025-07-10 03:29:29,051 ERROR Failed to decode JSON response from subscriptions API: b'bad json data'
+2025-07-10 03:29:29,052 ERROR An unexpected error occurred fetching subscriptions: Subscriptions fetch failed
+2025-07-10 03:29:29,055 ERROR Network error adding subscription: <Mock spec='PoolManager' id='140615098243440'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:29,057 ERROR Network error adding subscription: <Mock spec='PoolManager' id='140615098243440'>: Failed to establish a new connection
+2025-07-10 03:29:29,059 ERROR Failed to decode JSON response from add subscription API: b'invalid json content'
+2025-07-10 03:29:29,060 ERROR An unexpected error occurred adding subscription: Could not add subscription
+2025-07-10 03:29:29,063 ERROR Network error fetching episodes: <Mock spec='PoolManager' id='140615098243440'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:29,064 ERROR Network error fetching episodes: <Mock spec='PoolManager' id='140615098243440'>: Failed to establish a new connection
+2025-07-10 03:29:29,066 ERROR Failed to decode JSON response from get_episodes API: b'json is broken'
+2025-07-10 03:29:29,067 ERROR An unexpected error occurred fetching episodes: Episode retrieval error
+2025-07-10 03:29:29,069 ERROR Unexpected response structure from get_episodes API: {'episodes': []}
+2025-07-10 03:29:29,070 ERROR Unexpected response structure from get_episodes API: {'podcast': {'title': 'Test'}}
+2025-07-10 03:29:29,073 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1}
+2025-07-10 03:29:29,073 ERROR Network error updating podcast episode: <Mock spec='PoolManager' id='140615098243440'>: Max retries exceeded with url: url (Caused by 'test reason')
+2025-07-10 03:29:29,075 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1}
+2025-07-10 03:29:29,075 ERROR Network error updating podcast episode: <Mock spec='PoolManager' id='140615098243440'>: Failed to establish a new connection
+2025-07-10 03:29:29,076 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1}
+2025-07-10 03:29:29,076 ERROR Failed to decode JSON response from update_episode API: b'this is not json data'
+2025-07-10 03:29:29,078 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1}
+2025-07-10 03:29:29,078 ERROR An unexpected error occurred updating podcast episode: Update failed unexpectedly
+2025-07-10 03:29:29,079 INFO Updating episode: {'uuid': 'ep_uuid', 'playingStatus': 1, 'playedUpTo': 120}
